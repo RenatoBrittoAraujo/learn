@@ -1,0 +1,17 @@
+1) Crie pasta `.github/workflows`
+2) Cria aquivo yaml de qualquer nome
+
+Sintaxe:
+
+name: nome-do-workflow
+on: [push] # ação que da trigger a action
+jobs:
+	check-application: # nome do meu job
+		runs-on: ubuntu-latest
+		steps:
+			- uses: actions/checkout@v2  # Baixa os dados que subi
+			- uses: actions/setup-go@v2  # Seta o repositório go
+				with:
+					go-version: 1.15 # atributos
+			- run: go test
+			- run: go run math.go

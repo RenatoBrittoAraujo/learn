@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+
+  </head>
+  <body>
+    <h1>web socket!</h1>
+    <h3>Last message:</h3>
+    <i id="last-message">[no messages yet...]</i>
+    <div style="margin-top: 20px" id="loader"><i>loading websocket...</i></div>
+    <script>
+      const server = 'ws://localhost:8000'
+      console.log("stablishing connection to", server);
+      const ws = new WebSocket(server, ['json', 'xml']);
+
+      ws.addEventListener("message", (event) => {
+        // The `event` object is a typical DOM event object, and the message data sent
+        // by the server is stored in the `data` property
+        console.log("got message", e);
+        document.getElementById("last-message").innerHTML = e.data;
+      });
+
+      ws.addEventListener("open", () => {
+        console.log("connection ready");
+        // Send a message to the WebSocket server
+        ws.send("Hello!");
+        document.getElementById("loader").innerHTML =
+          '<button onclick="window.sendmsg()">send message</button>';
+        window.sendmsg = () => {
+          console.log(ws);
+          const msg = "CLIENT: " + new Date().toLocaleTimeString();
+          ws.send(msg);
+        };
+      });
+    </script>
+  </body>
+</html>

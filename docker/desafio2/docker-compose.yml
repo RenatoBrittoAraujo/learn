@@ -1,0 +1,33 @@
+version: "3"
+
+services:
+  mysql:
+    build: mysql
+    volumes:
+      - ./mysqldata:/var/lib/mysql
+    restart: always
+    command: --innodb-use-native-aio=0
+    networks:
+      - network-desafio2
+    environment:
+      - MYSQL_DATABASE=nodejs
+      - MYSQL_ROOT_PASSWORD=secret
+
+  nodejs:
+    build: nodejs
+    networks:
+      - network-desafio2
+    volumes:
+      - ./nodejs:/app
+      - /app/node_modules
+
+  nginx:
+    build: nginx
+    ports:
+      - 8080:80
+    networks:
+      - network-desafio2
+
+networks:
+  network-desafio2:
+    driver: bridge
