@@ -141,11 +141,11 @@ void transact_buffer_to_UART(Message *msgbuf)
     uart0_filestream = open("/dev/serial0", O_RDWR | O_NOCTTY | O_NDELAY); // Open in non blocking read/write mode
     if (uart0_filestream == -1)
     {
-        printf("Erro - Não foi possível iniciar a UART.\n");
+        printf("Error - could not initialized UART.\n");
     }
     else
     {
-        printf("UART inicializada!\n");
+        printf("UART initalized\n");
     }
     struct termios options;
     tcgetattr(uart0_filestream, &options);
@@ -183,17 +183,16 @@ void transact_buffer_to_UART(Message *msgbuf)
         int rx_length = read(uart0_filestream, (void *)rx_buffer, 255); // Filestream, buffer to store in, number of bytes to read (max)
         if (rx_length < 0)
         {
-            printf("Erro na leitura.\n"); // An error occured (will occur if there are no bytes)
+            printf("An error occured on buffer read.\n"); // An error occured (will occur if there are no bytes)
         }
         else if (rx_length == 0)
         {
-            printf("Nenhum dado disponível.\n"); // No data waiting
+            printf("No data available on read.\n"); // No data waiting
         }
         else
         {
             // Bytes received
             rx_buffer[rx_length] = '\0';
-            printf("%i Bytes lidos : %s\n", rx_length, rx_buffer);
         }
         (*msgbuf).output_buffer = rx_buffer;
         (*msgbuf).output_buffer_size = rx_length;
