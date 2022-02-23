@@ -33,3 +33,29 @@ então unificado no resultado final.
    3. Ao receber RES, calcula resultado sobre buffer final
    4. Envia ao cliente a resposta (min/max, 9 bytes)
    5. Encerra conexão   
+
+### Como usar
+
+### Compile
+
+```
+./cmp.sh
+```
+
+### Levante um número arbitrário de servidores
+
+```
+./server 0.0.0.0 <porta>
+```  
+
+*Por questão de clareza, faça cada servidor em um terminal separado*
+
+
+### Levante uma instância de cliente
+
+```
+./client 0.0.0.0 <porta servidor 1> <porta servidor 2> <porta servidor 3> ...
+```  
+
+*Por questão de clareza, faça o  cliente em um terminal separado*
+*Note que é necessário que pelo menos um servidor seja utilizado*

@@ -23,19 +23,6 @@ struct server_res
 };
 typedef struct server_res server_res;
 
-int get_min_max(float *buf, int buf_size)
-{
-    float min = 1000000;
-    float max = 0;
-    for (int i = 0; i < buf_size; i++)
-    {
-        if (buf[i] < buf[i + 1])
-        {
-            return i;
-        }
-    }
-}
-
 int fill_buffout(char *bufout, server_res res)
 {
     union
