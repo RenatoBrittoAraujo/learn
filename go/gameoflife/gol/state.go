@@ -1,4 +1,4 @@
-package gof
+package gol
 
 type Table [][]bool
 

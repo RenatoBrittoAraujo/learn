@@ -1,4 +1,4 @@
-package gof
+package gol
 
 func getEmptyTable(w, h int) *Table {
 	table := make(Table, h)

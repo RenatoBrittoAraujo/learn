@@ -1,9 +1,9 @@
 package engine
 
-import "github.com/renatobrittoaraujo/go-gameoflife/gof"
+import "github.com/renatobrittoaraujo/go-gameoflife/gol"
 
 type Engine struct {
-	gameState      *gof.GameState
+	gameState      *gol.GameState
 	screenWidth    int
 	screenHeight   int
 	configs        *Config
@@ -11,7 +11,7 @@ type Engine struct {
 }
 
 type RenderData struct {
-	gameState    gof.GameState
+	gameState    gol.GameState
 	screenWidth  int
 	screenHeight int
 }
@@ -22,7 +22,7 @@ type RenderConfigs struct {
 	screenHeightPx int  `json:"screenHeightPx"`
 }
 
-type GOFConfigs struct {
+type GOLConfigs struct {
 	width      int      `json:"width"`
 	height     int      `json:"height"`
 	startState [][]bool `json:"startState"`
@@ -30,6 +30,6 @@ type GOFConfigs struct {
 }
 
 type Config struct {
-	GOFData    GOFConfigs    `json:"GOFData"`
+	GOLData    GOLConfigs    `json:"GOlData"`
 	renderData RenderConfigs `json:"renderData"`
 }

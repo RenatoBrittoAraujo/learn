@@ -1,6 +1,6 @@
 package engine
 
-import "github.com/renatobrittoaraujo/go-gameoflife/gof"
+import "github.com/renatobrittoaraujo/go-gameoflife/gol"
 
 type Logs struct {
 	logs []Log
@@ -9,10 +9,10 @@ type Logs struct {
 type Log struct {
 	timestamp  string
 	iterations int
-	gameState  gof.GameState
+	gameState  gol.GameState
 }
 
-func LogGameState(gm *gof.GameState) {
+func LogGameState(gm *gol.GameState) {
 	// if !file, create
 	// else open file
 

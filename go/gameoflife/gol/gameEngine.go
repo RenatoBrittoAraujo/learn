@@ -1,4 +1,4 @@
-package gof
+package gol
 
 func getNeighborsCount(table *Table, x, y int) int {
 	count := 0

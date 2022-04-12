@@ -3,7 +3,7 @@ package engine
 import (
 	"fmt"
 
-	"github.com/renatobrittoaraujo/go-gameoflife/gof"
+	"github.com/renatobrittoaraujo/go-gameoflife/gol"
 	"github.com/renatobrittoaraujo/go-gameoflife/renderer"
 )
 
@@ -14,20 +14,20 @@ func CreateEngine(w int, h int) *Engine {
 	height := h
 	tableWidth := w
 	tableHeight := h
-	var table *gof.Table
+	var table *gol.Table
 
 	if configs != nil {
 		width = configs.renderData.screenWidthPx
 		height = configs.renderData.screenHeightPx
-		table = (*gof.Table)(&configs.GOFData.startState)
-		tableWidth = configs.GOFData.width
-		tableHeight = configs.GOFData.height
+		table = (*gol.Table)(&configs.GOlData.startState)
+		tableWidth = configs.GOlData.width
+		tableHeight = configs.GOlData.height
 	}
 
 	renderDataChan := make(chan *RenderData)
 
 	return &Engine{
-		gameState:      gof.CreateGameState(tableWidth, tableHeight, table),
+		gameState:      gol.CreateGameState(tableWidth, tableHeight, table),
 		screenWidth:    width,
 		screenHeight:   height,
 		configs:        configs,
@@ -35,7 +35,7 @@ func CreateEngine(w int, h int) *Engine {
 	}
 }
 
-func (e *Engine) RunGame() *gof.GameState {
+func (e *Engine) RunGame() *gol.GameState {
 	fmt.Println("Initializing game...")
 
 	if e.configs.renderData.shouldRender {
@@ -53,9 +53,9 @@ func (e *Engine) RunGame() *gof.GameState {
 	return endGameState
 }
 
-func (e *Engine) runLoop() *gof.GameState {
-	if e.configs != nil && e.configs.GOFData.iterations > -1 {
-		e.runIterationsLoop(e.configs.GOFData.iterations)
+func (e *Engine) runLoop() *gol.GameState {
+	if e.configs != nil && e.configs.GOlData.iterations > -1 {
+		e.runIterationsLoop(e.configs.GOlData.iterations)
 	} else {
 		e.runRenderLoop()
 	}
@@ -67,7 +67,7 @@ func (e *Engine) runIterationsLoop(iterations int) {
 	currentIterations := 0
 
 	for currentIterations < iterations {
-		gof.UpdateGameState(e.gameState)
+		gol.UpdateGameState(e.gameState)
 		currentIterations++
 	}
 }
@@ -76,7 +76,7 @@ func (e *Engine) runRenderLoop() {
 	currentIterations := 0
 
 	for {
-		gof.UpdateGameState(e.gameState)
+		gol.UpdateGameState(e.gameState)
 		currentIterations++
 		renderData := e.getRenderData()
 		e.renderDataChan <- renderData

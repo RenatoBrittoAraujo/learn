@@ -1,11 +1,11 @@
 package httpapi
 
-import "github.com/renatobrittoaraujo/go-gameoflife/gof"
+import "github.com/renatobrittoaraujo/go-gameoflife/gol"
 
 func InitializeApi() {
 
 }
 
-func getIterationsOfGOF(initialState *gof.Table, w, h, iterations int) {
+func getIterationsOfGOL(initialState *gol.Table, w, h, iterations int) {
 
 }
