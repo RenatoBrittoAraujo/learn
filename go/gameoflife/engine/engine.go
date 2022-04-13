@@ -14,12 +14,12 @@ func CreateEngine(w int, h int) *Engine {
 	height := h
 	tableWidth := w
 	tableHeight := h
-	var table *gol.Table
+	var table gol.Table
 
 	if configs != nil {
 		width = configs.RenderData.ScreenWidthPx
 		height = configs.RenderData.ScreenHeightPx
-		table = (*gol.Table)(&configs.GOLData.StartState)
+		table = configs.GOLData.StartState
 		tableWidth = configs.GOLData.Width
 		tableHeight = configs.GOLData.Height
 	}
@@ -78,10 +78,10 @@ func (e *Engine) runRenderLoop() {
 	currentIterations := 0
 
 	for {
-		gol.UpdateGameState(e.gameState)
-		currentIterations++
 		renderData := e.getRenderData()
 		e.renderDataChan <- renderData
+		gol.UpdateGameState(e.gameState)
+		currentIterations++
 	}
 }
 
