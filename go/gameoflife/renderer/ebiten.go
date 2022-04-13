@@ -1,13 +1,16 @@
 package renderer
 
 import (
-	"fmt"
 	"log"
 
 	"github.com/hajimehoshi/ebiten"
 )
 
-// Game implements ebiten.Game interface.
+var (
+	initialRenderData *RenderData
+	renderDataChan    chan *RenderData
+)
+
 type Game struct{}
 
 // Update proceeds the game state.
@@ -20,22 +23,27 @@ func (g *Game) Update(screen *ebiten.Image) error {
 // Draw draws the game screen.
 // Draw is called every frame (typically 1/60[s] for 60Hz display).
 func (g *Game) Draw(screen *ebiten.Image) {
+	renderData, ok := <-renderDataChan
 
+	if ok && screen != nil {
+		drawTable(renderData, screen)
+	}
 }
 
 // Layout takes the outside size (e.g., the window size) and returns the (logical) screen size.
 // If you don't have to adjust the screen size with the outside size, just return a fixed size.
 func (g *Game) Layout(outsideWidth, outsideHeight int) (screenWidth, screenHeight int) {
-	return 320, 240
+	return initialRenderData.ScreenWidth, initialRenderData.ScreenHeight
 }
 
-func InitializeGame() {
-	fmt.Println("MAIN ON DRAWER CALLED")
+func InitializeGame(_renderDataChan chan *RenderData, _initialRenderData *RenderData) {
+	renderDataChan = _renderDataChan
+	initialRenderData = _initialRenderData
 	game := &Game{}
-	// Specify the window size as you like. Here, a doubled size is specified.
-	ebiten.SetWindowSize(640, 480)
-	ebiten.SetWindowTitle("Your game's title")
-	// Call ebiten.RunGame to start your game loop.
+
+	ebiten.SetWindowSize(initialRenderData.ScreenWidth, initialRenderData.ScreenHeight)
+	ebiten.SetWindowTitle("Game of Life")
+
 	if err := ebiten.RunGame(game); err != nil {
 		log.Fatal(err)
 	}

@@ -1,11 +1,20 @@
 package gol
 
-func getNeighborsCount(table *Table, x, y int) int {
+func getNeighborsCount(gm *GameState, x, y int) int {
 	count := 0
 
 	for i := 1; i >= -1; i -= 2 {
 		for j := 1; j >= -1; j -= 2 {
-			if (*table)[x+j][y+i] {
+			cx := i + x
+			cy := j + y
+
+			if cx < 0 || cx >= gm.W-1 {
+				continue
+			}
+			if cy < 0 || cy >= gm.H-1 {
+				continue
+			}
+			if (*gm.Table)[cx][cy] {
 				count++
 			}
 		}
@@ -30,18 +39,18 @@ func getActivation(neighborsCount int, initialCellState bool) bool {
 }
 
 func UpdateGameState(gm *GameState) {
-	nextTable := getEmptyTable(gm.w, gm.h)
+	nextTable := getEmptyTable(gm.W, gm.H)
 
-	for row := 0; row < gm.h; row++ {
-		(*nextTable)[row] = make([]bool, gm.w)
+	for row := 0; row < gm.H-1; row++ {
+		(*nextTable)[row] = make([]bool, gm.W)
 
-		for column := 0; column < gm.w; column++ {
-			neighborsCount := getNeighborsCount(gm.table, row, column)
-			(*nextTable)[row][column] = getActivation(neighborsCount, (*gm.table)[row][column])
+		for column := 0; column < gm.W-1; column++ {
+			neighborsCount := getNeighborsCount(gm, row, column)
+			(*nextTable)[row][column] = getActivation(neighborsCount, (*gm.Table)[row][column])
 		}
 	}
 
-	gm.table = nextTable
+	gm.Table = nextTable
 }
 
 func CreateGameState(w, h int, initialTable *Table) *GameState {

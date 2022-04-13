@@ -8,7 +8,8 @@ import (
 )
 
 func loadConfigs() (*Config, bool) {
-	jsonFile, err := os.Open("config.json")
+	jsonFile, err := os.Open("configs.json")
+
 	if err != nil {
 		fmt.Println(err)
 		return nil, false
@@ -17,8 +18,13 @@ func loadConfigs() (*Config, bool) {
 	defer jsonFile.Close()
 
 	byteValue, _ := ioutil.ReadAll(jsonFile)
-	var config *Config
-	json.Unmarshal(byteValue, config)
+	var config Config
+	unmarshallErr := json.Unmarshal(byteValue, &config)
 
-	return config, false
+	if unmarshallErr != nil {
+		fmt.Println(unmarshallErr)
+		return nil, false
+	}
+
+	return &config, false
 }

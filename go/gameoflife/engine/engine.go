@@ -17,14 +17,14 @@ func CreateEngine(w int, h int) *Engine {
 	var table *gol.Table
 
 	if configs != nil {
-		width = configs.renderData.screenWidthPx
-		height = configs.renderData.screenHeightPx
-		table = (*gol.Table)(&configs.GOlData.startState)
-		tableWidth = configs.GOlData.width
-		tableHeight = configs.GOlData.height
+		width = configs.RenderData.ScreenWidthPx
+		height = configs.RenderData.ScreenHeightPx
+		table = (*gol.Table)(&configs.GOLData.StartState)
+		tableWidth = configs.GOLData.Width
+		tableHeight = configs.GOLData.Height
 	}
 
-	renderDataChan := make(chan *RenderData)
+	renderDataChan := make(chan *renderer.RenderData)
 
 	return &Engine{
 		gameState:      gol.CreateGameState(tableWidth, tableHeight, table),
@@ -36,29 +36,31 @@ func CreateEngine(w int, h int) *Engine {
 }
 
 func (e *Engine) RunGame() *gol.GameState {
-	fmt.Println("Initializing game...")
 
-	if e.configs.renderData.shouldRender {
-		fmt.Println("Renderer created...")
-		renderer.InitializeGame()
+	go func() {
+		fmt.Println("Starting main loop...")
+		e.runLoop()
+		fmt.Println("Main loop returned, exiting...")
+	}()
+
+	if e.configs != nil && e.configs.RenderData.ShouldRender {
+		fmt.Println("Creating renderer...")
+		initialRenderData := e.getRenderData()
+		renderer.InitializeGame(e.renderDataChan, initialRenderData)
 	}
 
-	fmt.Println("Game has initialized, starting main loop")
-	endGameState := e.runLoop()
-
-	fmt.Println("Main loop returned, exiting...")
-
 	// TODO: Logging of results
-	// TODO: Abort catch and save
-	return endGameState
+
+	return e.gameState
 }
 
 func (e *Engine) runLoop() *gol.GameState {
-	if e.configs != nil && e.configs.GOlData.iterations > -1 {
-		e.runIterationsLoop(e.configs.GOlData.iterations)
+	if e.configs != nil && e.configs.GOLData.Iterations > -1 {
+		e.runIterationsLoop(e.configs.GOLData.Iterations)
 	} else {
 		e.runRenderLoop()
 	}
+	close(e.renderDataChan)
 
 	return e.gameState
 }
@@ -83,10 +85,10 @@ func (e *Engine) runRenderLoop() {
 	}
 }
 
-func (e *Engine) getRenderData() *RenderData {
-	return &RenderData{
-		gameState:    *e.gameState,
-		screenWidth:  e.screenWidth,
-		screenHeight: e.screenHeight,
+func (e *Engine) getRenderData() *renderer.RenderData {
+	return &renderer.RenderData{
+		GameState:    *e.gameState,
+		ScreenWidth:  e.screenWidth,
+		ScreenHeight: e.screenHeight,
 	}
 }
