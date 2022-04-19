@@ -26,7 +26,7 @@ func getNeighborsCount(gm *GameState, x, y int) int {
 				continue
 			}
 
-			if (*gm.Table)[cx][cy] {
+			if (*gm.Table)[cy][cx] {
 				count++
 			}
 		}
@@ -60,7 +60,7 @@ func UpdateGameState(gm *GameState) {
 
 		for column := 0; column < gm.W; column++ {
 			isPopulated := (*gm.Table)[row][column]
-			neighborsCount := getNeighborsCount(gm, row, column)
+			neighborsCount := getNeighborsCount(gm, column, row)
 
 			(*nextTable)[row][column] = getActivation(neighborsCount, isPopulated)
 		}

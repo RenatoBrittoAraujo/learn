@@ -27,34 +27,34 @@ func drawTable(renderData *RenderData, screen *ebiten.Image) {
 func drawLines(renderData *RenderData, screen *ebiten.Image) {
 	width := renderData.ScreenWidth - 2*tablePadding
 
-	initializeImageIfNotAlready(&lineImage, width, 1)
+	initializeImageIfNotAlready(&lineImage, width*renderScale, 1)
 
 	op := &ebiten.DrawImageOptions{}
 	lineCount := renderData.GameState.H
 
 	translateDelta := (float64(renderData.ScreenHeight) - 2*float64(tablePadding)) / (float64(lineCount))
 
-	op.GeoM.Translate(float64(tablePadding), float64(tablePadding))
+	op.GeoM.Translate(float64(tablePadding)*renderScale, float64(tablePadding)*renderScale)
 	for i := 0; i < lineCount+1; i++ {
 		screen.DrawImage(lineImage, op)
-		op.GeoM.Translate(0, translateDelta)
+		op.GeoM.Translate(0, translateDelta*renderScale)
 	}
 }
 
 func drawColumns(renderData *RenderData, screen *ebiten.Image) {
 	height := renderData.ScreenHeight - 2*tablePadding
 
-	initializeImageIfNotAlready(&columnImage, 1, height)
+	initializeImageIfNotAlready(&columnImage, 1, height*renderScale)
 
 	op := &ebiten.DrawImageOptions{}
 	columnCount := renderData.GameState.W
 
 	translateDelta := (float64(renderData.ScreenWidth) - 2*float64(tablePadding)) / (float64(columnCount))
 
-	op.GeoM.Translate(float64(tablePadding), float64(tablePadding))
+	op.GeoM.Translate(float64(tablePadding)*renderScale, float64(tablePadding)*renderScale)
 	for i := 0; i < columnCount+1; i++ {
 		screen.DrawImage(columnImage, op)
-		op.GeoM.Translate(translateDelta, 0)
+		op.GeoM.Translate(translateDelta*renderScale, 0)
 	}
 }
 
@@ -65,7 +65,7 @@ func drawTiles(renderData *RenderData, screen *ebiten.Image) {
 	tileWidth := (renderData.ScreenWidth - 2*tablePadding) / w
 	tileHeight := (renderData.ScreenHeight - 2*tablePadding) / h
 
-	initializeImageIfNotAlready(&tileImage, tileWidth, tileHeight)
+	initializeImageIfNotAlready(&tileImage, tileWidth*renderScale, tileHeight*renderScale)
 	for y, row := range *renderData.GameState.Table {
 		for x, isPainted := range row {
 			if !isPainted {
@@ -75,7 +75,7 @@ func drawTiles(renderData *RenderData, screen *ebiten.Image) {
 			op := &ebiten.DrawImageOptions{}
 			xTranslate := float64(tablePadding) + float64(x)*float64(tileWidth)
 			yTranslate := float64(tablePadding) + float64(y)*float64(tileHeight)
-			op.GeoM.Translate(xTranslate, yTranslate)
+			op.GeoM.Translate(xTranslate*renderScale, yTranslate*renderScale)
 			screen.DrawImage(tileImage, op)
 		}
 	}

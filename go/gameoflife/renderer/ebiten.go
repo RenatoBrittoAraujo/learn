@@ -6,6 +6,10 @@ import (
 	"github.com/hajimehoshi/ebiten"
 )
 
+const (
+	renderScale = 2
+)
+
 var (
 	initialRenderData *RenderData
 	renderDataChan    chan *RenderData
@@ -33,7 +37,7 @@ func (g *Game) Draw(screen *ebiten.Image) {
 // Layout takes the outside size (e.g., the window size) and returns the (logical) screen size.
 // If you don't have to adjust the screen size with the outside size, just return a fixed size.
 func (g *Game) Layout(outsideWidth, outsideHeight int) (screenWidth, screenHeight int) {
-	return initialRenderData.ScreenWidth, initialRenderData.ScreenHeight
+	return int(float64(outsideWidth) * renderScale), int(float64(outsideHeight) * renderScale)
 }
 
 func InitializeGame(_renderDataChan chan *RenderData, _initialRenderData *RenderData) {
