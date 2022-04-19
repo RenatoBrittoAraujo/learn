@@ -20,8 +20,6 @@ type RenderConfigs struct {
 }
 
 type GOLConfigs struct {
-	Width      int      `json:"width"`
-	Height     int      `json:"height"`
 	StartState [][]bool `json:"startState"`
 	Iterations int      `json:"iterations"`
 }

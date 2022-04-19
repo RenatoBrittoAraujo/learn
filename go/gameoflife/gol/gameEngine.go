@@ -4,6 +4,10 @@ import (
 	"time"
 )
 
+const (
+	tickSpeed = 500
+)
+
 func getNeighborsCount(gm *GameState, x, y int) int {
 	count := 0
 
@@ -15,10 +19,10 @@ func getNeighborsCount(gm *GameState, x, y int) int {
 			cx := x + i
 			cy := y + j
 
-			if cx < 0 || cx >= gm.W-1 {
+			if cx < 0 || cx >= gm.W {
 				continue
 			}
-			if cy < 0 || cy >= gm.H-1 {
+			if cy < 0 || cy >= gm.H {
 				continue
 			}
 
@@ -51,10 +55,10 @@ func UpdateGameState(gm *GameState) {
 
 	nextTable := getEmptyTable(gm.W, gm.H)
 
-	for row := 0; row < gm.H-1; row++ {
+	for row := 0; row < gm.H; row++ {
 		(*nextTable)[row] = make([]bool, gm.W)
 
-		for column := 0; column < gm.W-1; column++ {
+		for column := 0; column < gm.W; column++ {
 			isPopulated := (*gm.Table)[row][column]
 			neighborsCount := getNeighborsCount(gm, row, column)
 
@@ -78,6 +82,6 @@ func CreateGameState(w, h int, initialTable Table) *GameState {
 		w,
 		h,
 		table,
-		300,
+		tickSpeed,
 	}
 }

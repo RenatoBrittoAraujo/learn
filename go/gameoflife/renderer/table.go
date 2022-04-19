@@ -66,7 +66,6 @@ func drawTiles(renderData *RenderData, screen *ebiten.Image) {
 	tileHeight := (renderData.ScreenHeight - 2*tablePadding) / h
 
 	initializeImageIfNotAlready(&tileImage, tileWidth, tileHeight)
-
 	for y, row := range *renderData.GameState.Table {
 		for x, isPainted := range row {
 			if !isPainted {

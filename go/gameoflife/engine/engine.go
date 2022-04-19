@@ -20,8 +20,8 @@ func CreateEngine(w int, h int) *Engine {
 		width = configs.RenderData.ScreenWidthPx
 		height = configs.RenderData.ScreenHeightPx
 		table = configs.GOLData.StartState
-		tableWidth = configs.GOLData.Width
-		tableHeight = configs.GOLData.Height
+		tableWidth = len(table[0])
+		tableHeight = len(table)
 	}
 
 	renderDataChan := make(chan *renderer.RenderData)

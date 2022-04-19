@@ -5,9 +5,8 @@
     "screenHeightPx": 500
   },
   "golData": {
-    "width": 10,
-    "height": 10,
     "startState": [
+      [false, false, false, false, false, false, false, false, false, false],
       [false, false, false, false, false, false, false, false, false, false],
       [false, false, false, false, false, false, false, false, false, false],
       [false, false, false, false, false, false, false, false, false, false],
