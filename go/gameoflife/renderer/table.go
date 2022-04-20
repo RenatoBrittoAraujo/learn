@@ -72,16 +72,15 @@ func drawTiles(renderData *RenderData, screen *ebiten.Image) {
 	w := renderData.GameState.W
 	h := renderData.GameState.H
 
-	tileWidth := (tableWidth - 2*tablePadding) / w
-	tileHeight := (tableHeight - 2*tablePadding) / h
+	tileWidth := (float64(tableWidth)-2*float64(tablePadding))/float64(w) + 0.05
+	tileHeight := (float64(tableHeight)-2*float64(tablePadding))/float64(h) + 0.05
 
-	initializeImageIfNotAlready(&tileImage, tileWidth*renderScale, tileHeight*renderScale)
+	initializeImageIfNotAlready(&tileImage, int(tileWidth*renderScale), int(tileHeight*renderScale))
 	for y, row := range *renderData.GameState.Table {
 		for x, isPainted := range row {
 			if !isPainted {
 				continue
 			}
-
 			op := &ebiten.DrawImageOptions{}
 			xTranslate := float64(tablePadding) + float64(x)*float64(tileWidth)
 			yTranslate := float64(tablePadding) + float64(y)*float64(tileHeight)
