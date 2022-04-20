@@ -13,10 +13,20 @@ var (
 	lineImage       *ebiten.Image
 	columnImage     *ebiten.Image
 	tileImage       *ebiten.Image
+	tableWidth      int
+	tableHeight     int
 )
 
+func setWidthAndHeight(renderData *RenderData) {
+	tableWidth = renderData.ScreenWidth
+	tableHeight = renderData.ScreenHeight - bottomGUIHeight
+}
+
 func drawTable(renderData *RenderData, screen *ebiten.Image) {
-	// paint screen over
+	if tableWidth == 0 || tableHeight == 0 {
+		setWidthAndHeight(renderData)
+	}
+
 	screen.Fill(backgroundColor)
 
 	drawLines(renderData, screen)
@@ -25,14 +35,14 @@ func drawTable(renderData *RenderData, screen *ebiten.Image) {
 }
 
 func drawLines(renderData *RenderData, screen *ebiten.Image) {
-	width := renderData.ScreenWidth - 2*tablePadding
+	width := tableWidth - 2*tablePadding
 
 	initializeImageIfNotAlready(&lineImage, width*renderScale, 1)
 
 	op := &ebiten.DrawImageOptions{}
 	lineCount := renderData.GameState.H
 
-	translateDelta := (float64(renderData.ScreenHeight) - 2*float64(tablePadding)) / (float64(lineCount))
+	translateDelta := (float64(tableHeight) - 2*float64(tablePadding)) / (float64(lineCount))
 
 	op.GeoM.Translate(float64(tablePadding)*renderScale, float64(tablePadding)*renderScale)
 	for i := 0; i < lineCount+1; i++ {
@@ -42,14 +52,14 @@ func drawLines(renderData *RenderData, screen *ebiten.Image) {
 }
 
 func drawColumns(renderData *RenderData, screen *ebiten.Image) {
-	height := renderData.ScreenHeight - 2*tablePadding
+	height := tableHeight - 2*tablePadding
 
 	initializeImageIfNotAlready(&columnImage, 1, height*renderScale)
 
 	op := &ebiten.DrawImageOptions{}
 	columnCount := renderData.GameState.W
 
-	translateDelta := (float64(renderData.ScreenWidth) - 2*float64(tablePadding)) / (float64(columnCount))
+	translateDelta := (float64(tableWidth) - 2*float64(tablePadding)) / (float64(columnCount))
 
 	op.GeoM.Translate(float64(tablePadding)*renderScale, float64(tablePadding)*renderScale)
 	for i := 0; i < columnCount+1; i++ {
@@ -62,8 +72,8 @@ func drawTiles(renderData *RenderData, screen *ebiten.Image) {
 	w := renderData.GameState.W
 	h := renderData.GameState.H
 
-	tileWidth := (renderData.ScreenWidth - 2*tablePadding) / w
-	tileHeight := (renderData.ScreenHeight - 2*tablePadding) / h
+	tileWidth := (tableWidth - 2*tablePadding) / w
+	tileHeight := (tableHeight - 2*tablePadding) / h
 
 	initializeImageIfNotAlready(&tileImage, tileWidth*renderScale, tileHeight*renderScale)
 	for y, row := range *renderData.GameState.Table {

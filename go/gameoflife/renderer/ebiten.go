@@ -13,6 +13,7 @@ const (
 var (
 	initialRenderData *RenderData
 	renderDataChan    chan *RenderData
+	currentRenderData *RenderData
 )
 
 type Game struct{}
@@ -20,18 +21,25 @@ type Game struct{}
 // Update proceeds the game state.
 // Update is called every tick (1/60 [s] by default).
 func (g *Game) Update(screen *ebiten.Image) error {
-	// Write your game's logical update.
+
+	select {
+	case renderData, ok := <-renderDataChan:
+		if ok {
+			currentRenderData = renderData
+		}
+	default:
+	}
+
+	checkInput(currentRenderData)
+
 	return nil
 }
 
 // Draw draws the game screen.
 // Draw is called every frame (typically 1/60[s] for 60Hz display).
 func (g *Game) Draw(screen *ebiten.Image) {
-	renderData, ok := <-renderDataChan
-
-	if ok && screen != nil {
-		drawTable(renderData, screen)
-	}
+	drawTable(currentRenderData, screen)
+	drawGUI(currentRenderData, screen)
 }
 
 // Layout takes the outside size (e.g., the window size) and returns the (logical) screen size.

@@ -53,6 +53,10 @@ func getActivation(neighborsCount int, isPopulated bool) bool {
 func UpdateGameState(gm *GameState) {
 	time.Sleep(time.Duration(gm.maxTickSpeedMS * int(time.Millisecond)))
 
+	if !gm.SimulationRunning {
+		return
+	}
+
 	nextTable := getEmptyTable(gm.W, gm.H)
 
 	for row := 0; row < gm.H; row++ {
@@ -83,5 +87,17 @@ func CreateGameState(w, h int, initialTable Table) *GameState {
 		h,
 		table,
 		tickSpeed,
+		true,
 	}
+}
+
+func (gm *GameState) SwitchTile(x, y int) {
+	if x < 0 || x >= gm.W || y < 0 || y >= gm.H {
+		panic("Invalid input for tile update")
+	}
+	(*gm.Table)[y][x] = !(*gm.Table)[y][x]
+}
+
+func (gm *GameState) SwitchSimulationStatus() {
+	gm.SimulationRunning = !gm.SimulationRunning
 }

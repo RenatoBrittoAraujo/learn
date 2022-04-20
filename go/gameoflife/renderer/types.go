@@ -7,3 +7,11 @@ type RenderData struct {
 	ScreenWidth  int
 	ScreenHeight int
 }
+
+type MouseAction struct {
+	x       int
+	y       int
+	w       int
+	h       int
+	onClick func(renderData *RenderData)
+}
