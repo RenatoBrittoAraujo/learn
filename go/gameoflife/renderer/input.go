@@ -37,9 +37,6 @@ func checkAction(x, y int, action *MouseAction, renderData *RenderData) bool {
 	inXRange := x >= action.x && x <= action.x+action.w
 	inYRange := y >= action.y && y <= action.y+action.h
 
-	fmt.Println("CLICK POS = ", x, y)
-	fmt.Println("RECT POS = ", action)
-
 	if inXRange && inYRange {
 		action.onClick(renderData)
 		return true
@@ -48,6 +45,10 @@ func checkAction(x, y int, action *MouseAction, renderData *RenderData) bool {
 }
 
 func setMouseAction(name string, value MouseAction) {
+	value.x *= renderScale
+	value.y *= renderScale
+	value.w *= renderScale
+	value.h *= renderScale
 	if _, ok := mouseActions[name]; !ok {
 		mouseActions[name] = value
 	}
