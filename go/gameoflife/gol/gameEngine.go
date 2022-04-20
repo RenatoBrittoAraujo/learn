@@ -8,7 +8,7 @@ const (
 	tickSpeed = 500
 )
 
-func getNeighborsCount(gm *GameState, x, y int) int {
+func (gm *GameState) getNeighborsCount(x, y int) int {
 	count := 0
 
 	for i := -1; i <= 1; i++ {
@@ -50,7 +50,7 @@ func getActivation(neighborsCount int, isPopulated bool) bool {
 	return false
 }
 
-func UpdateGameState(gm *GameState) {
+func (gm *GameState) UpdateGameState() {
 	time.Sleep(time.Duration(gm.maxTickSpeedMS * int(time.Millisecond)))
 
 	if !gm.SimulationRunning {
@@ -64,13 +64,13 @@ func UpdateGameState(gm *GameState) {
 
 		for column := 0; column < gm.W; column++ {
 			isPopulated := (*gm.Table)[row][column]
-			neighborsCount := getNeighborsCount(gm, column, row)
+			neighborsCount := gm.getNeighborsCount(column, row)
 
 			(*nextTable)[row][column] = getActivation(neighborsCount, isPopulated)
 		}
 	}
 
-	gm.Table = nextTable
+	(*gm.Table) = *nextTable
 }
 
 func CreateGameState(w, h int, initialTable Table) *GameState {

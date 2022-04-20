@@ -94,11 +94,7 @@ func drawBottomImage(renderData *RenderData, screen *ebiten.Image, image *ebiten
 			w: int(width),
 			h: int(height),
 			onClick: func(renderData *RenderData) {
-				if renderData.GameState.SimulationRunning {
-					renderData.GameState.SimulationRunning = false
-				} else {
-					renderData.GameState.SimulationRunning = true
-				}
+				renderData.GameState.SwitchSimulationStatus()
 			},
 		},
 	)

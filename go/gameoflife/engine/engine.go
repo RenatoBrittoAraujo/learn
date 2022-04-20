@@ -24,14 +24,12 @@ func CreateEngine(w int, h int) *Engine {
 		tableHeight = len(table)
 	}
 
-	renderDataChan := make(chan *renderer.RenderData)
-
 	return &Engine{
 		gameState:      gol.CreateGameState(tableWidth, tableHeight, table),
 		screenWidth:    width,
 		screenHeight:   height,
 		configs:        configs,
-		renderDataChan: renderDataChan,
+		renderDataChan: make(chan *renderer.RenderData),
 	}
 }
 
@@ -45,8 +43,8 @@ func (e *Engine) RunGame() *gol.GameState {
 
 	if e.configs != nil && e.configs.RenderData.ShouldRender {
 		fmt.Println("Creating renderer...")
-		initialRenderData := e.getRenderData()
-		renderer.InitializeGame(e.renderDataChan, initialRenderData)
+		e.renderDataChan <- e.getRenderData()
+		renderer.InitializeGame(e.renderDataChan)
 	}
 
 	// TODO: Logging of results
@@ -54,38 +52,36 @@ func (e *Engine) RunGame() *gol.GameState {
 	return e.gameState
 }
 
-func (e *Engine) runLoop() *gol.GameState {
+func (e *Engine) runLoop() {
+	iterations := -1
 	if e.configs != nil && e.configs.GOLData.Iterations > -1 {
-		e.runIterationsLoop(e.configs.GOLData.Iterations)
-	} else {
-		e.runRenderLoop()
+		iterations = e.configs.GOLData.Iterations
 	}
-	close(e.renderDataChan)
 
-	return e.gameState
-}
-
-func (e *Engine) runIterationsLoop(iterations int) {
 	currentIterations := 0
 
-	for currentIterations < iterations {
-		gol.UpdateGameState(e.gameState)
+	for iterations < 0 || currentIterations < iterations {
+		e.updateRenderData()
+
+		e.renderData.GameState.UpdateGameState()
+		e.renderDataChan <- e.renderData
 		currentIterations++
 	}
 }
 
-func (e *Engine) runRenderLoop() {
-	currentIterations := 0
-
-	for {
-		renderData := e.getRenderData()
-		e.renderDataChan <- renderData
-		gol.UpdateGameState(e.gameState)
-		currentIterations++
+func (e *Engine) updateRenderData() {
+	select {
+	case renderData, ok := <-e.renderDataChan:
+		if ok {
+			e.renderData = renderData
+		}
+	default:
 	}
 }
-
 func (e *Engine) getRenderData() *renderer.RenderData {
+	if e.renderData != nil {
+		return e.renderData
+	}
 	return &renderer.RenderData{
 		GameState:    *e.gameState,
 		ScreenWidth:  e.screenWidth,

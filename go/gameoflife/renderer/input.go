@@ -1,8 +1,6 @@
 package renderer
 
 import (
-	"fmt"
-
 	"github.com/hajimehoshi/ebiten"
 )
 
@@ -19,11 +17,8 @@ func checkInput(renderData *RenderData) {
 	if ebiten.IsMouseButtonPressed(ebiten.MouseButtonLeft) {
 		if !isClicked {
 			x, y := ebiten.CursorPosition()
-			for key, action := range mouseActions {
-				executed := checkAction(x, y, &action, renderData)
-				if executed {
-					fmt.Println("Click found for ", key)
-				}
+			for _, action := range mouseActions {
+				executeActionIfClicked(x, y, &action, renderData)
 			}
 
 			isClicked = true
@@ -33,7 +28,7 @@ func checkInput(renderData *RenderData) {
 	}
 }
 
-func checkAction(x, y int, action *MouseAction, renderData *RenderData) bool {
+func executeActionIfClicked(x, y int, action *MouseAction, renderData *RenderData) bool {
 	inXRange := x >= action.x && x <= action.x+action.w
 	inYRange := y >= action.y && y <= action.y+action.h
 

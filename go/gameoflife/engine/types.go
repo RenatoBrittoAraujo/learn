@@ -11,6 +11,7 @@ type Engine struct {
 	screenHeight   int
 	configs        *Config
 	renderDataChan chan *renderer.RenderData
+	renderData     *renderer.RenderData
 }
 
 type RenderConfigs struct {

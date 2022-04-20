@@ -10,36 +10,27 @@ const (
 	renderScale = 2
 )
 
-var (
-	initialRenderData *RenderData
-	renderDataChan    chan *RenderData
+type Game struct {
 	currentRenderData *RenderData
-)
-
-type Game struct{}
+	renderDataChan    chan *RenderData
+}
 
 // Update proceeds the game state.
 // Update is called every tick (1/60 [s] by default).
 func (g *Game) Update(screen *ebiten.Image) error {
+	g.tryFetchNewRenderData()
 
-	select {
-	case renderData, ok := <-renderDataChan:
-		if ok {
-			currentRenderData = renderData
-		}
-	default:
-	}
+	checkInput(g.currentRenderData)
 
-	checkInput(currentRenderData)
-
+	g.updateRenderData()
 	return nil
 }
 
 // Draw draws the game screen.
 // Draw is called every frame (typically 1/60[s] for 60Hz display).
 func (g *Game) Draw(screen *ebiten.Image) {
-	drawTable(currentRenderData, screen)
-	drawGUI(currentRenderData, screen)
+	drawTable(g.currentRenderData, screen)
+	drawGUI(g.currentRenderData, screen)
 }
 
 // Layout takes the outside size (e.g., the window size) and returns the (logical) screen size.
@@ -48,15 +39,36 @@ func (g *Game) Layout(outsideWidth, outsideHeight int) (screenWidth, screenHeigh
 	return int(float64(outsideWidth) * renderScale), int(float64(outsideHeight) * renderScale)
 }
 
-func InitializeGame(_renderDataChan chan *RenderData, _initialRenderData *RenderData) {
-	renderDataChan = _renderDataChan
-	initialRenderData = _initialRenderData
+func InitializeGame(renderDataChan chan *RenderData) {
 	game := &Game{}
+	game.renderDataChan = renderDataChan
+	game.currentRenderData = <-renderDataChan
 
-	ebiten.SetWindowSize(initialRenderData.ScreenWidth, initialRenderData.ScreenHeight)
+	ebiten.SetWindowSize(game.currentRenderData.ScreenWidth, game.currentRenderData.ScreenHeight)
 	ebiten.SetWindowTitle("Game of Life")
 
 	if err := ebiten.RunGame(game); err != nil {
 		log.Fatal(err)
+	}
+}
+
+func (g *Game) tryFetchNewRenderData() {
+	select {
+	case newRenderData, ok := <-g.renderDataChan:
+		if ok {
+			g.currentRenderData = newRenderData
+		}
+	default:
+	}
+}
+
+func (g *Game) updateRenderData() {
+
+	select {
+	case _, ok := <-g.renderDataChan:
+		if !ok {
+			g.renderDataChan <- g.currentRenderData
+		}
+	default:
 	}
 }
