@@ -1,0 +1,5 @@
+.terraform/
+aws/
+lambda_function_payload.zip
+.terraform.lock.hcl
+terraform.tfstate.backup
