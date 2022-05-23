@@ -16,6 +16,7 @@ provider "aws" {
   secret_key = "--TODO--"
 }
 
+# LEARNING FROM https://learn.hashicorp.com/tutorials/terraform/aws-change
 
 resource "aws_iam_role" "iam_for_lambda" {
   name = "iam_for_lambda"
